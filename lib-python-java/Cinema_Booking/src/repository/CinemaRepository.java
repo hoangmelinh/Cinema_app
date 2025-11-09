@@ -18,7 +18,7 @@ public class CinemaRepository {
             stmt.executeUpdate();
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
-                    cinema.setCinemaId(rs.getString(1)); // nếu user_id kiểu int thì dùng getInt
+                    cinema.setCinemaId(rs.getString(1));
                 }
             }
         } catch (Exception e) {

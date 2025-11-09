@@ -20,10 +20,9 @@ public class UserRepository {
             stmt.setString(5, user.getContact());
             stmt.executeUpdate();
 
-            // Lấy id tự sinh từ DB
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
-                    user.setUserId(rs.getString(1)); // nếu user_id kiểu int thì dùng getInt
+                    user.setUserId(rs.getString(1));
                 }
             }
         } catch (Exception e) {

@@ -11,7 +11,7 @@ public class User {
 
 
     public User(String userId, String username, String password, String name, String address, String contact) {
-        this.userId = String.format("%03d", id++);
+        this.userId = userId;
         setUsername(username);
         setPassword(password);
         setName(name);
