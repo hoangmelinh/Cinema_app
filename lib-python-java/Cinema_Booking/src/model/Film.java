@@ -1,26 +1,28 @@
 package model;
 
 public class Film {
-    private String filmId;
+    private int filmId;
     private String title;
     private String genre;
     private int duration;
     private String description;
 
-
-    public Film(String filmId, String title, String genre, int duration, String description) {
-        this.filmId = filmId;
-        this.title = title;
-        this.genre = genre;
-        this.duration = duration;
-        this.description = description;
+    public Film() {
     }
 
-    public String getFilmId() {
+    public Film(int filmId, String title, String genre, int duration, String description) {
+        setFilmId(filmId);
+        setTitle(title);
+        setGenre(genre);
+        setDuration(duration);
+        setDescription(description);
+    }
+
+    public int getFilmId() {
         return filmId;
     }
 
-    public void setFilmId(String filmId) {
+    public void setFilmId(int filmId) {
         this.filmId = filmId;
     }
 

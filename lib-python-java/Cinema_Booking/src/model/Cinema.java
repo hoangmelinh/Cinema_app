@@ -1,22 +1,22 @@
 package model;
 
 public class Cinema {
-    private String cinemaId;
+    private int cinemaId;
     private String name;
     private String address;
 
 
-    public Cinema(String cinemaId, String name, String address) {
+    public Cinema(int cinemaId, String name, String address) {
         setCinemaId(cinemaId);
         setName(name);
         setAddress(address);
     }
 
-    public String getCinemaId() {
+    public int getCinemaId() {
         return cinemaId;
     }
 
-    public void setCinemaId(String cinemaId) {
+    public void setCinemaId(int cinemaId) {
         this.cinemaId = cinemaId;
     }
 

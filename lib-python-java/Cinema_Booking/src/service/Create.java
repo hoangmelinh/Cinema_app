@@ -2,6 +2,7 @@ package service;
 
 import repository.*;
 import model.*;
+import java.util.List;
 
 public class Create {
     private final TicketRepository ticketRepo;
@@ -10,27 +11,64 @@ public class Create {
     private final UserRepository userRepo;
     private final FilmRepository filmRepo;
     private final CinemaRepository cinemaRepo;
+    private final ShowtimeSeatRepository showtimeSeatRepo;
 
-    public Create(TicketRepository ticketRepo, SeatRepository seatRepo, ShowtimeRepository showtimeRepo, UserRepository userRepo, FilmRepository filmRepo, CinemaRepository cinemaRepo) {
+    // 2. THÊM ShowtimeSeatRepository VÀO CONSTRUCTOR
+    public Create(TicketRepository ticketRepo, SeatRepository seatRepo,
+                  ShowtimeRepository showtimeRepo, UserRepository userRepo,
+                  FilmRepository filmRepo, CinemaRepository cinemaRepo,
+                  ShowtimeSeatRepository showtimeSeatRepo) {
         this.ticketRepo = ticketRepo;
         this.seatRepo = seatRepo;
         this.showtimeRepo = showtimeRepo;
         this.userRepo = userRepo;
         this.cinemaRepo = cinemaRepo;
         this.filmRepo = filmRepo;
+        this.showtimeSeatRepo = showtimeSeatRepo;
     }
 
-    public void CreateShowtimeAndSeat(Showtime showtime){
+
+    public void createShowtimeAndShowtimeSeats(Showtime showtime) {
+
+
         showtimeRepo.insert(showtime);
-        for(int i = 1 ; i <= 5 ; i++) {
-            for (int j = 1; j <= 5; j++) {
-                Seat seat = new Seat();
-                seat.setShowtimeId(showtime.getShowtimeId());
-                seat.setRow(String.valueOf((char) ('A' + i - 1)));
-                seat.setNumber(j);
-                seat.setStatus(false);
-                seatRepo.insert(seat);
+
+
+        List<Seat> allPhysicalSeats = seatRepo.findAll();
+
+
+        for (Seat physicalSeat : allPhysicalSeats) {
+
+            // 4. Tạo ra một "ghế trạng thái" (ShowtimeSeat)
+            ShowtimeSeat ss = new ShowtimeSeat();
+
+            ss.setShowtime(showtime);
+            ss.setSeat(physicalSeat);
+            ss.setStatus("available");
+
+
+            showtimeSeatRepo.insert(ss);
+        }
+    }
+
+
+    public void setupInitialSeats() {
+        // Kiểm tra xem đã có ghế chưa để tránh chạy 2 lần
+        if (seatRepo.findAll().isEmpty()) {
+            System.out.println("Đang thiết lập ghế lần đầu...");
+            for (int i = 1; i <= 5; i++) {
+                for (int j = 1; j <= 5; j++) {
+                    Seat seat = new Seat();
+
+                    seat.setSeatrow(String.valueOf((char) ('A' + i - 1)));
+                    seat.setNumber(j);
+
+                    seatRepo.insert(seat);
+                }
             }
+            System.out.println("Đã tạo 25 ghế (A1-E5) thành công.");
+        } else {
+            System.out.println("Ghế đã được thiết lập từ trước.");
         }
-        }
+    }
 }

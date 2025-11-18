@@ -1,71 +1,72 @@
     package model;
 
     public class Ticket {
-        private String ticketId;
-        private String userId;
-        private String showtimeId;
-        private String seatId;
-        private boolean status;
+        private int ticketId;
+        private User user;
+        private ShowtimeSeat showtimeSeat;
+        private Invoice invoice;
+        private String status;
 
-        public Ticket() {}
+        public Ticket() {
 
-        public Ticket(String ticketId, String userId, String showtimeId, String seatId, boolean status) {
+        }
+
+        public Ticket(int ticketId, User user, ShowtimeSeat showtimeSeat, Invoice invoice, String status) {
             this.ticketId = ticketId;
-            setUserId(userId);
-            this.showtimeId = showtimeId;
-            this.seatId = seatId;
+            this.user = user;
+            this.showtimeSeat = showtimeSeat;
+            this.invoice = invoice;
             this.status = status;
         }
 
-        public String getTicketId() {
+        public int getTicketId() {
             return ticketId;
         }
 
-        public void setTicketId(String ticketId) {
+        public void setTicketId(int ticketId) {
             this.ticketId = ticketId;
         }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            if (userId != null && !userId.trim().isEmpty()) {
-                this.userId = userId;
-            }
-        }
-
-        public String getShowtimeId() {
-            return showtimeId;
-        }
-
-        public void setShowtimeId(String showtimeId) {
-            this.showtimeId = showtimeId;
-        }
-
-        public String getSeatId() {
-            return seatId;
-        }
-
-        public void setSeatId(String seatId) {
-            this.seatId = seatId;
-        }
-
-        public boolean isStatus() {
+        public String getStatus() {
             return status;
         }
 
-        public void setStatus(boolean status) {
+        public void setStatus(String status) {
             this.status = status;
+        }
+
+        public User getUser() {
+            return user;
+        }
+
+        public void setUser(User user) {
+            this.user = user;
+        }
+
+        public ShowtimeSeat getShowtimeSeat() {
+            return showtimeSeat;
+        }
+
+        public void setShowtimeSeat(ShowtimeSeat showtimeSeat) {
+            this.showtimeSeat = showtimeSeat;
+        }
+
+        public Invoice getInvoice() {
+            return invoice;
+        }
+
+        public void setInvoice(Invoice invoice) {
+            this.invoice = invoice;
         }
 
         @Override
         public String toString() {
+            int uid = (user != null) ? user.getUserId() : 0;
+            int ssid = (showtimeSeat != null) ? showtimeSeat.getShowtimeSeatId() : 0;
+
             return "Ticket{" +
                     "ticketId='" + ticketId + '\'' +
-                    ", userId='" + userId + '\'' +
-                    ", showtimeId='" + showtimeId + '\'' +
-                    ", seatId='" + seatId + '\'' +
+                    ", userId='" + uid + '\'' +
+                    ", showtimeId='" + ssid + '\'' +
                     ", status=" + status +
                     '}';
         }

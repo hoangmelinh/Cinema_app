@@ -1,25 +1,50 @@
-// TicketRepository.java
 package repository;
 
+import model.Invoice;
+import model.ShowtimeSeat;
 import model.Ticket;
+import model.User;
 import util.DatabaseConnection;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TicketRepository {
+
+    // --- SỬA: Giữ lại các trường, nhưng không 'new' ở đây ---
+    private final UserRepository userRepository;
+    private final ShowtimeSeatRepository showtimeSeatRepository;
+    private final InvoiceRepository invoiceRepository;
+
+
+    // --- SỬA: XÓA constructor cũ và THÊM constructor mới ---
+    // Constructor này "nhận" các repo đã được tạo từ bên ngoài
+    public TicketRepository(UserRepository userRepo,
+                            ShowtimeSeatRepository ssRepo,
+                            InvoiceRepository invRepo) {
+
+        this.userRepository = userRepo;
+        this.showtimeSeatRepository = ssRepo;
+        this.invoiceRepository = invRepo;
+    }
+    // ----------------------------------------------------
+
+
     public void insert(Ticket ticket) {
-        String sql = "INSERT INTO tickets (user_id, showtime_id, seat_id, status) VALUES (?, ?, ?, ?)";
+        // (Code insert của bạn đã đúng logic, giữ nguyên)
+        String sql = "INSERT INTO ticket (user_id, showtimeseat_id, invoice_id, status) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            stmt.setInt(1, Integer.parseInt(ticket.getUserId()));
-            stmt.setInt(2, Integer.parseInt(ticket.getShowtimeId()));
-            stmt.setInt(3, Integer.parseInt(ticket.getSeatId()));
-            stmt.setBoolean(4, ticket.isStatus());
+
+            stmt.setInt(1, ticket.getUser().getUserId());
+            stmt.setInt(2, ticket.getShowtimeSeat().getShowtimeSeatId());
+            stmt.setInt(3, ticket.getInvoice().getInvoiceId());
+            stmt.setString(4, ticket.getStatus());
+
             stmt.executeUpdate();
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
-                    ticket.setTicketId(rs.getString(1));
+                    ticket.setTicketId(rs.getInt(1));
                 }
             }
         } catch (Exception e) {
@@ -27,19 +52,31 @@ public class TicketRepository {
         }
     }
 
-    public Ticket findById(String ticketId) {
-        String sql = "SELECT * FROM tickets WHERE ticket_id=?";
+    public Ticket findByTicketId(int ticketId) {
+        String sql = "SELECT * FROM ticket WHERE ticket_id=?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, ticketId);
+
+            stmt.setInt(1, ticketId);
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
+                int userId = rs.getInt("user_id");
+                int ssId = rs.getInt("showtimeseat_id");
+                int invId = rs.getInt("invoice_id");
+
+                // (Code "hợp tác" này của bạn đã đúng,
+                //  vì nó dùng các repo đã được "tiêm" vào)
+                User user = userRepository.findById(userId);
+                ShowtimeSeat ss = showtimeSeatRepository.findById(ssId);
+                Invoice inv = invoiceRepository.findById(invId);
+
                 return new Ticket(
-                        rs.getString("ticket_id"),
-                        rs.getString("user_id"),
-                        rs.getString("showtime_id"),
-                        rs.getString("seat_id"),
-                        rs.getBoolean("status")
+                        rs.getInt("ticket_id"),
+                        user,
+                        ss,
+                        inv,
+                        rs.getString("status")
                 );
             }
         } catch (Exception e) {
@@ -48,90 +85,30 @@ public class TicketRepository {
         return null;
     }
 
-    public List<Ticket> findByShowtimeId(String showtimeId) {
+
+    public List<Ticket> findByUserId(int userId) {
+        // (Code này của bạn đã đúng, giữ nguyên)
         List<Ticket> list = new ArrayList<>();
-        String sql = "SELECT * FROM tickets WHERE showtime_id = ? ";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)){
-             stmt.setString(1, showtimeId);
-             ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                list.add(new Ticket(
-                        rs.getString("ticket_id"),
-                        rs.getString("user_id"),
-                        rs.getString("showtime_id"),
-                        rs.getString("seat_id"),
-                        rs.getBoolean("status")
-                ));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    public List<Ticket> findAll() {
-        List<Ticket> list = new ArrayList<>();
-        String sql = "SELECT * FROM tickets";
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                list.add(new Ticket(
-                        rs.getString("ticket_id"),
-                        rs.getString("user_id"),
-                        rs.getString("showtime_id"),
-                        rs.getString("seat_id"),
-                        rs.getBoolean("status")
-                ));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    public void update(Ticket ticket) {
-        String sql = "UPDATE tickets SET user_id=?, showtime_id=?, seat_id=?, status=? WHERE ticket_id=?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, ticket.getUserId());
-            stmt.setString(2, ticket.getShowtimeId());
-            stmt.setString(3, ticket.getSeatId());
-            stmt.setBoolean(4, ticket.isStatus());
-            stmt.setString(5, ticket.getTicketId());
-            stmt.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void delete(String ticketId) {
-        String sql = "DELETE FROM tickets WHERE ticket_id=?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, ticketId);
-            stmt.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public List<Ticket> findByUserId(String userId) {
-        List<Ticket> list = new ArrayList<>();
-        String sql = "SELECT * FROM tickets WHERE user_id = ?";
+        String sql = "SELECT * FROM ticket WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, userId);
+            stmt.setInt(1, userId);
+            User user = userRepository.findById(userId); // Dùng repo được tiêm
+
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
+                    int ssId = rs.getInt("showtimeseat_id");
+                    int invId = rs.getInt("invoice_id");
+                    ShowtimeSeat ss = showtimeSeatRepository.findById(ssId);
+                    Invoice inv = invoiceRepository.findById(invId);
+
                     list.add(new Ticket(
-                            rs.getString("ticket_id"),
-                            rs.getString("user_id"),
-                            rs.getString("showtime_id"),
-                            rs.getString("seat_id"),
-                            rs.getBoolean("status")
+                            rs.getInt("ticket_id"),
+                            user,
+                            ss,
+                            inv,
+                            rs.getString("status")
                     ));
                 }
             }
@@ -141,4 +118,107 @@ public class TicketRepository {
         return list;
     }
 
+
+    public List<Ticket> findByShowtimeId(int showtimeId) {
+        // (Code này của bạn đã đúng, giữ nguyên)
+        List<Ticket> list = new ArrayList<>();
+        String sql = "SELECT t.* FROM ticket t " +
+                "JOIN showtimeseat ss ON t.showtimeseat_id = ss.showtimeseat_id " +
+                "WHERE ss.showtime_id = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)){
+
+            stmt.setInt(1, showtimeId);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                int userId = rs.getInt("user_id");
+                int ssId = rs.getInt("showtimeseat_id");
+                int invId = rs.getInt("invoice_id");
+
+                User user = userRepository.findById(userId);
+                ShowtimeSeat ss = showtimeSeatRepository.findById(ssId);
+                Invoice inv = invoiceRepository.findById(invId);
+
+                list.add(new Ticket(
+                        rs.getInt("ticket_id"),
+                        user,
+                        ss,
+                        inv,
+                        rs.getString("status")
+                ));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
+    public List<Ticket> findByInvoiceId(int invoiceId) {
+        // (Code này của bạn đã đúng, giữ nguyên)
+        List<Ticket> list = new ArrayList<>();
+        String sql = "SELECT * FROM ticket WHERE invoice_id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, invoiceId);
+            Invoice invoice = invoiceRepository.findById(invoiceId); // Dùng repo được tiêm
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int userId = rs.getInt("user_id");
+                    int ssId = rs.getInt("showtimeseat_id");
+
+                    User user = userRepository.findById(userId);
+                    ShowtimeSeat ss = showtimeSeatRepository.findById(ssId);
+
+                    list.add(new Ticket(
+                            rs.getInt("ticket_id"),
+                            user,
+                            ss,
+                            invoice,
+                            rs.getString("status")
+                    ));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
+    public void update(Ticket ticket) {
+        // (Code này của bạn đã đúng, giữ nguyên)
+        String sql = "UPDATE ticket SET user_id=?, showtimeseat_id=?, invoice_id=?, status=? WHERE ticket_id=?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, ticket.getUser().getUserId());
+            stmt.setInt(2, ticket.getShowtimeSeat().getShowtimeSeatId());
+            stmt.setInt(3, ticket.getInvoice().getInvoiceId());
+            stmt.setString(4, ticket.getStatus());
+            stmt.setInt(5, ticket.getTicketId());
+
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public void delete(int ticketId) {
+        // (Code này của bạn đã đúng, giữ nguyên)
+        String sql = "DELETE FROM ticket WHERE ticket_id=?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, ticketId);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

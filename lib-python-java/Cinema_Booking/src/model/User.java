@@ -1,95 +1,73 @@
 package model;
 
 public class User {
-    private String userId;
-    private String username;
+    private int userId;
+    private String fullName;
+    private String email;
+    private String phone;
     private String password;
-    private String name;
-    private String address;
-    private String contact;
-    static int id = 1;
 
-
-    public User(String userId, String username, String password, String name, String address, String contact) {
+    public User(int userId, String fullName, String email, String phone, String password) {
         this.userId = userId;
-        setUsername(username);
-        setPassword(password);
-        setName(name);
-        setAddress(address);
-        setContact(contact);
+        this.fullName = fullName;
+        this.email = email;
+        this.phone = phone;
+        this.password = password;
     }
 
     public User() {
+
     }
 
-    public String getUserId() {
+
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public String getUsername() {
-        return username;
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setUsername(String username) {
-        if (username != null) {
-            this.username = username;
-        }
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getPassword() {
-
         return password;
     }
 
     public void setPassword(String password) {
-        if (password.length() == 6) {
-            this.password = password;
-        }
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        if (name != null) {
-            this.name = username;
-        }
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        if (address != null) {
-            this.address = address;
-        }
-    }
-
-    public String getContact() {
-        return contact;
-    }
-
-    public void setContact(String contact) {
-        if (contact.length() == 10) {
-            this.contact = contact;
-        }
+        this.password = password;
     }
 
     @Override
     public String toString() {
         return "User{" +
-                "userId: '" + userId + '\'' +
-                ", username: '" + username + '\'' +
-                ", password (6 ký tự) :'[PROTECTED]'" +
-                ", name :'" + name + '\'' +
-                ", address :'" + address + '\'' +
-                ", contact :'" + contact + '\'' +
+                "userId=" + userId +
+                ", fullName='" + fullName + '\'' +
+                ", email='" + email + '\'' +
+                ", phone='" + phone + '\'' +
+                ", password='" + password + '\'' +
                 '}';
     }
 }

@@ -1,8 +1,8 @@
-// ShowtimeRepository.java
 package repository;
 
 import java.util.*;
 import model.Film;
+import model.Cinema;
 import model.Showtime;
 import util.DatabaseConnection;
 import java.sql.*;
@@ -11,169 +11,226 @@ import java.util.HashSet;
 import java.util.List;
 
 public class ShowtimeRepository {
+
+    private FilmRepository filmRepository;
+    private CinemaRepository cinemaRepository;
+
+    public ShowtimeRepository() {
+        this.filmRepository = new FilmRepository();
+        this.cinemaRepository = new CinemaRepository();
+    }
+
+    // ================= INSERT =================
     public void insert(Showtime showtime) {
-        // Cần thêm price vào câu lệnh INSERT nếu bạn muốn lưu giá vé
-        String sql = "INSERT INTO showtimes (film_id, cinema_id, date, room, price) VALUES (?, ?, ?, ?, ?)";
+
+        String sql = "INSERT INTO showtime (film_id, cinema_id, date, price) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);) {
-            stmt.setString(1, showtime.getFilmId());
-            stmt.setString(2, showtime.getCinemaId());
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setInt(1, showtime.getFilm().getFilmId());
+            stmt.setInt(2, showtime.getCinema().getCinemaId());
             stmt.setTimestamp(3, new Timestamp(showtime.getDate().getTime()));
-            stmt.setString(4, showtime.getRoom());
-            stmt.setDouble(5, showtime.getPrice()); // <--- THÊM PRICE
+            stmt.setDouble(4, showtime.getPrice());
+
             stmt.executeUpdate();
-            try (ResultSet rs = stmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    showtime.setShowtimeId(rs.getString(1));
-                }
-            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public Showtime findById(String showtimeId) {
-        // Cần SELECT thêm cột price
-        String sql = "SELECT * FROM showtimes WHERE showtime_id=?";
+    // ================= FIND BY ID =================
+    public Showtime findById(int showtimeId) {
+        String sql = "SELECT * FROM showtime WHERE showtime_id=?";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, showtimeId);
+
+            stmt.setInt(1, showtimeId);
             ResultSet rs = stmt.executeQuery();
+
             if (rs.next()) {
+
+                int filmId = rs.getInt("film_id");
+                int cinemaId = rs.getInt("cinema_id");
+
+                Film film = filmRepository.findById(filmId);
+                Cinema cinema = cinemaRepository.findById(cinemaId);
+
                 return new Showtime(
-                        rs.getString("showtime_id"),
-                        rs.getString("film_id"),
-                        rs.getString("cinema_id"),
+                        rs.getInt("showtime_id"),
+                        film,
+                        cinema,
                         rs.getTimestamp("date"),
-                        rs.getString("room"),
-                        rs.getDouble("price") // <--- THÊM PRICE VÀO CONSTRUCTOR
+                        rs.getDouble("price")
                 );
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return null;
     }
 
+    // ================= FIND ALL =================
     public List<Showtime> findAll() {
         List<Showtime> list = new ArrayList<>();
-        // Cần SELECT thêm cột price
-        String sql = "SELECT * FROM showtimes";
+        String sql = "SELECT * FROM showtime";
+
         try (Connection conn = DatabaseConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
+
             while (rs.next()) {
+
+                int filmId = rs.getInt("film_id");
+                int cinemaId = rs.getInt("cinema_id");
+
+                Film film = filmRepository.findById(filmId);
+                Cinema cinema = cinemaRepository.findById(cinemaId);
+
                 list.add(new Showtime(
-                        rs.getString("showtime_id"),
-                        rs.getString("film_id"),
-                        rs.getString("cinema_id"),
+                        rs.getInt("showtime_id"),
+                        film,
+                        cinema,
                         rs.getTimestamp("date"),
-                        rs.getString("room"),
-                        rs.getDouble("price") // <--- THÊM PRICE VÀO CONSTRUCTOR
+                        rs.getDouble("price")
                 ));
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return list;
     }
 
+    // ================= UPDATE =================
     public void update(Showtime showtime) {
-        // Cần UPDATE thêm cột price
-        String sql = "UPDATE showtimes SET film_id=?, cinema_id=?, date=?, room=?, price=? WHERE showtime_id=?";
+        String sql = "UPDATE showtime SET film_id=?, cinema_id=?, date=?, price=? WHERE showtime_id=?";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, showtime.getFilmId());
-            stmt.setString(2, showtime.getCinemaId());
+
+            stmt.setInt(1, showtime.getFilm().getFilmId());
+            stmt.setInt(2, showtime.getCinema().getCinemaId());
             stmt.setTimestamp(3, new Timestamp(showtime.getDate().getTime()));
-            stmt.setString(4, showtime.getRoom());
-            stmt.setDouble(5, showtime.getPrice()); // <--- THÊM PRICE
-            stmt.setString(6, showtime.getShowtimeId());
+            stmt.setDouble(4, showtime.getPrice());
+            stmt.setInt(5, showtime.getShowtimeId());
+
             stmt.executeUpdate();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void delete(String showtimeId) {
-        String sql = "DELETE FROM showtimes WHERE showtime_id=?";
+    // ================= DELETE =================
+    public void delete(int showtimeId) {
+        String sql = "DELETE FROM showtime WHERE showtime_id=?";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, showtimeId);
+
+            stmt.setInt(1, showtimeId);
             stmt.executeUpdate();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public List<Showtime> findByFilmId(String filmId) {
+    // ================= FIND BY FILM ID =================
+    public List<Showtime> findByFilmId(int filmId) {
         List<Showtime> list = new ArrayList<>();
-        // Cần SELECT thêm cột price
-        String sql = "SELECT * FROM showtimes WHERE film_id=?";
+        String sql = "SELECT * FROM showtime WHERE film_id=?";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, filmId);
+
+            stmt.setInt(1, filmId);
             ResultSet rs = stmt.executeQuery();
+
+            Film film = filmRepository.findById(filmId);
+
             while (rs.next()) {
+                int cinemaId = rs.getInt("cinema_id");
+                Cinema cinema = cinemaRepository.findById(cinemaId);
+
                 list.add(new Showtime(
-                        rs.getString("showtime_id"),
-                        rs.getString("film_id"),
-                        rs.getString("cinema_id"),
-                        rs.getDate("date"),
-                        rs.getString("room"),
-                        rs.getDouble("price") // <--- THÊM PRICE VÀO CONSTRUCTOR
+                        rs.getInt("showtime_id"),
+                        film,
+                        cinema,
+                        rs.getTimestamp("date"),
+                        rs.getDouble("price")
                 ));
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return list;
     }
 
-    public List<Showtime> findByCinemaIdAndFilmId(String CinemaId, String FilmId) {
+    // ================= FIND BY CINEMA + FILM =================
+    public List<Showtime> findByCinemaIdAndFilmId(int cinemaId, int filmId) {
         List<Showtime> list = new ArrayList<>();
-        // Cần SELECT thêm cột price
-        String sql = "SELECT * FROM showtimes WHERE cinema_id = ? AND film_id=?";
+        String sql = "SELECT * FROM showtime WHERE cinema_id=? AND film_id=?";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, CinemaId);
-            stmt.setString(2, FilmId);
+
+            stmt.setInt(1, cinemaId);
+            stmt.setInt(2, filmId);
             ResultSet rs = stmt.executeQuery();
+
+            Film film = filmRepository.findById(filmId);
+            Cinema cinema = cinemaRepository.findById(cinemaId);
+
             while (rs.next()) {
                 list.add(new Showtime(
-                        rs.getString("showtime_id"),
-                        rs.getString("film_id"),
-                        rs.getString("cinema_id"),
-                        rs.getDate("date"),
-                        rs.getString("room"),
-                        rs.getDouble("price") // <--- THÊM PRICE VÀO CONSTRUCTOR
+                        rs.getInt("showtime_id"),
+                        film,
+                        cinema,
+                        rs.getTimestamp("date"),
+                        rs.getDouble("price")
                 ));
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return list;
     }
 
-    public List<Film> findFilmByCinemaId(String CinemaId){
-        // Phần này không cần sửa vì nó không tạo đối tượng Showtime
-        FilmRepository filmRepo = new FilmRepository();
-        Set<String> set = new HashSet<>();
-        String sql = "SELECT film_id FROM showtimes WHERE cinema_id = ? ";
+    // ================= FIND ALL FILMS OF CINEMA =================
+    public List<Film> findFilmByCinemaId(int cinemaId) {
+
+        Set<Integer> set = new HashSet<>();
+        String sql = "SELECT film_id FROM showtime WHERE cinema_id=?";
+
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, CinemaId);
+
+            stmt.setInt(1, cinemaId);
             ResultSet rs = stmt.executeQuery();
+
             while (rs.next()) {
-                set.add(rs.getString("film_id"));
+                set.add(rs.getInt("film_id"));
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         List<Film> list = new ArrayList<>();
-        for(String i : set){
-            list.add(filmRepo.findById(i));
+        for (Integer id : set) {
+            list.add(filmRepository.findById(id));
         }
+
         return list;
     }
 

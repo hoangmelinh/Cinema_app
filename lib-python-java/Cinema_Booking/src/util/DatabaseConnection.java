@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DatabaseConnection {
-    private static final String URL = "jdbc:mysql://localhost:3306/cinema_db1";
+    private static final String URL = "jdbc:mysql://localhost:3306/cinema_app";
     private static final String USER = "root";
     private static final String PASSWORD = "04100706";
 

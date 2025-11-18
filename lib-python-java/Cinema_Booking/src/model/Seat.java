@@ -1,52 +1,34 @@
 package model;
 
 public class Seat {
-    private String seatId;
-    private String showtimeId;
-    private boolean status;
-    private String row;
+    private int seatId;
+    private String seatrow;
+    private String label;
     private int number;
 
     public Seat() {}
 
-    public Seat(String seatId, String showtimeId, boolean status, String row, int number) {
-        this.seatId = seatId;
-        this.showtimeId = showtimeId;
-        this.status = status;
-        this.row = row;
-        this.number = number;
+    public Seat(int seatId, String seatrow, String label, int number) {
+        setSeatId(seatId);
+        setSeatrow(seatrow);
+        setLabel(label);
+        setNumber(number);
     }
 
-    public String getSeatId() {
+    public int getSeatId() {
         return seatId;
     }
 
-    public void setSeatId(String seatId) {
+    public void setSeatId(int seatId) {
         this.seatId = seatId;
     }
 
-    public String getShowtimeId() {
-        return showtimeId;
+    public String getSeatrow() {
+        return seatrow;
     }
 
-    public void setShowtimeId(String showtimeId) {
-        this.showtimeId = showtimeId;
-    }
-
-    public boolean isStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
-    public String getRow() {
-        return row;
-    }
-
-    public void setRow(String row) {
-        this.row = row;
+    public void setSeatrow(String seatrow) {
+        this.seatrow = seatrow;
     }
 
     public int getNumber() {
@@ -57,12 +39,17 @@ public class Seat {
         this.number = number;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
     @Override
     public String toString() {
         return "Seat{" +
-                "seatId='" + seatId + '\'' +
-                ", cinemaId='" + showtimeId + '\'' +
-                ", status=" + status +
-                '}';
+                "seatId='" + seatId + '\'';
     }
 }
