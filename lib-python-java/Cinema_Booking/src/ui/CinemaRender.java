@@ -1,13 +1,12 @@
 package ui;
 
-import model.Cinema; // Import model
+import model.Cinema;
 import javax.swing.*;
 import java.awt.*;
 
-// 1. Class này kế thừa JPanel VÀ implements ListCellRenderer
 public class CinemaRender extends JPanel implements ListCellRenderer<Cinema> {
 
-    // 2. Khai báo các thành phần trong "template"
+
     private JLabel cinemaNameLabel;
     private JLabel cinemaAddressLabel;
 
@@ -29,11 +28,11 @@ public class CinemaRender extends JPanel implements ListCellRenderer<Cinema> {
         add(cinemaAddressLabel, BorderLayout.SOUTH);
     }
 
-    // 6. Đây là hàm quan trọng nhất
-    // JList sẽ gọi hàm này cho TỪNG HÀNG
+
+
     @Override
     public Component getListCellRendererComponent(JList<? extends Cinema> list,
-                                                  Cinema cinema, // Đối tượng Cinema của hàng đó
+                                                  Cinema cinema,
                                                   int index,
                                                   boolean isSelected,
                                                   boolean cellHasFocus) {
@@ -55,6 +54,6 @@ public class CinemaRender extends JPanel implements ListCellRenderer<Cinema> {
             cinemaAddressLabel.setForeground(Color.DARK_GRAY);
         }
 
-        return this; // Trả về chính template này
+        return this;
     }
 }

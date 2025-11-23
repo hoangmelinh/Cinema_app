@@ -13,7 +13,6 @@ public class Create {
     private final CinemaRepository cinemaRepo;
     private final ShowtimeSeatRepository showtimeSeatRepo;
 
-    // 2. THÊM ShowtimeSeatRepository VÀO CONSTRUCTOR
     public Create(TicketRepository ticketRepo, SeatRepository seatRepo,
                   ShowtimeRepository showtimeRepo, UserRepository userRepo,
                   FilmRepository filmRepo, CinemaRepository cinemaRepo,
@@ -39,7 +38,7 @@ public class Create {
 
         for (Seat physicalSeat : allPhysicalSeats) {
 
-            // 4. Tạo ra một "ghế trạng thái" (ShowtimeSeat)
+
             ShowtimeSeat ss = new ShowtimeSeat();
 
             ss.setShowtime(showtime);
@@ -53,7 +52,7 @@ public class Create {
 
 
     public void setupInitialSeats() {
-        // Kiểm tra xem đã có ghế chưa để tránh chạy 2 lần
+
         if (seatRepo.findAll().isEmpty()) {
             System.out.println("Đang thiết lập ghế lần đầu...");
             for (int i = 1; i <= 5; i++) {

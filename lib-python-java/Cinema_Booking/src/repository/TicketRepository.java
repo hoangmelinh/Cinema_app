@@ -11,14 +11,13 @@ import java.util.List;
 
 public class TicketRepository {
 
-    // --- SỬA: Giữ lại các trường, nhưng không 'new' ở đây ---
+
     private final UserRepository userRepository;
     private final ShowtimeSeatRepository showtimeSeatRepository;
     private final InvoiceRepository invoiceRepository;
 
 
-    // --- SỬA: XÓA constructor cũ và THÊM constructor mới ---
-    // Constructor này "nhận" các repo đã được tạo từ bên ngoài
+
     public TicketRepository(UserRepository userRepo,
                             ShowtimeSeatRepository ssRepo,
                             InvoiceRepository invRepo) {
@@ -31,7 +30,6 @@ public class TicketRepository {
 
 
     public void insert(Ticket ticket) {
-        // (Code insert của bạn đã đúng logic, giữ nguyên)
         String sql = "INSERT INTO ticket (user_id, showtimeseat_id, invoice_id, status) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -65,8 +63,7 @@ public class TicketRepository {
                 int ssId = rs.getInt("showtimeseat_id");
                 int invId = rs.getInt("invoice_id");
 
-                // (Code "hợp tác" này của bạn đã đúng,
-                //  vì nó dùng các repo đã được "tiêm" vào)
+
                 User user = userRepository.findById(userId);
                 ShowtimeSeat ss = showtimeSeatRepository.findById(ssId);
                 Invoice inv = invoiceRepository.findById(invId);
@@ -87,7 +84,7 @@ public class TicketRepository {
 
 
     public List<Ticket> findByUserId(int userId) {
-        // (Code này của bạn đã đúng, giữ nguyên)
+
         List<Ticket> list = new ArrayList<>();
         String sql = "SELECT * FROM ticket WHERE user_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -120,7 +117,6 @@ public class TicketRepository {
 
 
     public List<Ticket> findByShowtimeId(int showtimeId) {
-        // (Code này của bạn đã đúng, giữ nguyên)
         List<Ticket> list = new ArrayList<>();
         String sql = "SELECT t.* FROM ticket t " +
                 "JOIN showtimeseat ss ON t.showtimeseat_id = ss.showtimeseat_id " +
@@ -157,7 +153,7 @@ public class TicketRepository {
 
 
     public List<Ticket> findByInvoiceId(int invoiceId) {
-        // (Code này của bạn đã đúng, giữ nguyên)
+
         List<Ticket> list = new ArrayList<>();
         String sql = "SELECT * FROM ticket WHERE invoice_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -191,7 +187,7 @@ public class TicketRepository {
 
 
     public void update(Ticket ticket) {
-        // (Code này của bạn đã đúng, giữ nguyên)
+
         String sql = "UPDATE ticket SET user_id=?, showtimeseat_id=?, invoice_id=?, status=? WHERE ticket_id=?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -210,7 +206,7 @@ public class TicketRepository {
 
 
     public void delete(int ticketId) {
-        // (Code này của bạn đã đúng, giữ nguyên)
+
         String sql = "DELETE FROM ticket WHERE ticket_id=?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

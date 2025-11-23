@@ -3,21 +3,21 @@ package service;
 import model.*;
 import repository.*;
 
-import java.util.ArrayList; // THÊM IMPORT NÀY
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class BookingService {
 
-    // 1. Khai báo các repo (Giữ nguyên)
+
     private final TicketRepository ticketRepo;
     private final ShowtimeRepository showtimeRepo;
     private final UserRepository userRepo;
     private final InvoiceRepository invoiceRepo;
     private final ShowtimeSeatRepository showtimeSeatRepo;
 
-    // --- HÀM KHỞI TẠO (Đã sửa từ lần trước) ---
+
     public BookingService(TicketRepository ticketRepo,
                           ShowtimeSeatRepository showtimeSeatRepo,
                           InvoiceRepository invoiceRepo,
@@ -103,7 +103,7 @@ public class BookingService {
 
 
         try {
-            // 1. Tạo 1 Hóa đơn CHUNG
+
             Invoice invoice = new Invoice();
             invoice.setUser(user);
             invoice.setTotal(totalPrice);
@@ -210,7 +210,6 @@ public class BookingService {
     public List<ShowtimeSeat> getAvailableSeats(int showtimeId) {
         List<ShowtimeSeat> allSeats = showtimeSeatRepo.findByShowtimeId(showtimeId);
 
-        // Lọc chỉ trả về những ghế 'available'
         return allSeats.stream()
                 .filter(ss -> "available".equalsIgnoreCase(ss.getStatus()))
                 .collect(Collectors.toList());
@@ -228,7 +227,7 @@ public class BookingService {
 
 
     public boolean finalizePayment(int invoiceId) {
-        // (Phần code này của bạn đã đúng)
+
         Invoice invoice = invoiceRepo.findById(invoiceId);
         if (invoice == null || !"pending".equals(invoice.getStatus())) {
             return false;

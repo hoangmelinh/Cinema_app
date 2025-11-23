@@ -19,10 +19,7 @@ public class ShowtimeSeatRepository {
         this.seatRepository = new SeatRepository();
     }
 
-    /**
-     * Tạo một hàng mới trong bảng showtimeseat
-     * Thường dùng khi tạo mới một suất chiếu (tạo ra N ghế-suất-chiếu)
-     */
+
     public void insert(ShowtimeSeat showtimeSeat) {
         String sql = "INSERT INTO showtimeseat (showtime_id, seat_id, status) VALUES (?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -43,10 +40,7 @@ public class ShowtimeSeatRepository {
         }
     }
 
-    /**
-     * Hàm quan trọng: Cập nhật trạng thái của một ghế
-     * (ví dụ: từ "available" -> "booked")
-     */
+
     public void updateStatus(int showtimeSeatId, String newStatus) {
         String sql = "UPDATE showtimeseat SET status = ? WHERE showtimeseat_id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -99,7 +93,7 @@ public class ShowtimeSeatRepository {
 
             stmt.setInt(1, showtimeId);
 
-            // Tìm đối tượng Showtime 1 LẦN DUY NHẤT bên ngoài vòng lặp
+
             Showtime showtime = showtimeRepository.findById(showtimeId);
 
             ResultSet rs = stmt.executeQuery();

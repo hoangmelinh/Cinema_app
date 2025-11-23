@@ -3,14 +3,13 @@ package ui;
 import model.CurrentSession;
 import model.ShowtimeSeat;
 import model.User;
-// import model.Ticket; // Không cần Ticket nữa, chúng ta cần Invoice
-import model.Invoice; // GIẢ SỬ BẠN CÓ MODEL NÀY
+import model.Invoice;
 import service.BookingService;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
-import java.util.ArrayList; // THÊM IMPORT NÀY
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +23,7 @@ public class BookingPanel extends JPanel {
     private JButton confirmButton;
     private JButton backButton;
     private JLabel screenLabel;
-    // private ButtonGroup seatGroup; // <-- ĐÃ XÓA
+
 
     // Dữ liệu
     private Map<JToggleButton, Integer> seatButtonMap;
@@ -34,7 +33,7 @@ public class BookingPanel extends JPanel {
         this.mainApp = mainApp;
         this.bookingService = bookingService;
         this.seatButtonMap = new HashMap<>();
-        // this.seatGroup = new ButtonGroup(); // <-- ĐÃ XÓA
+
 
         setLayout(new BorderLayout(10, 10));
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -92,12 +91,9 @@ public class BookingPanel extends JPanel {
             }
 
             // 4. Gọi Service để đặt NHIỀU vé
-            // !!! LƯU Ý QUAN TRỌNG !!!
-            // Bạn phải tự định nghĩa hàm 'bookMultipleTickets' trong BookingService
-            // Hàm này nên nhận vào List<Integer> và tạo 1 Invoice CHUNG
 
             try {
-                // Giả sử hàm này trả về Invoice
+
                 Invoice invoice = bookingService.bookMultipleTickets(currentUser.getUserId(), selectedSeatIds);
 
                 // 5. Xử lý kết quả
@@ -118,7 +114,7 @@ public class BookingPanel extends JPanel {
         });
     }
 
-    // Hàm này được gọi bởi Main để tải dữ liệu
+
     public void loadSeats(int showtimeId) {
         this.currentShowtimeId = showtimeId;
 
@@ -130,8 +126,6 @@ public class BookingPanel extends JPanel {
         List<ShowtimeSeat> seats = bookingService.getAvailableSeats(showtimeId);
 
         // (Tùy chọn) Cập nhật GridLayout dựa trên số lượng ghế
-        // Ví dụ: nếu rạp là 10x10 = 100 ghế
-        // seatGridPanel.setLayout(new GridLayout(10, 10, 5, 5));
 
         for (ShowtimeSeat ss : seats) {
             String seatLabel = ss.getSeat().getSeatrow() + ss.getSeat().getNumber();
@@ -142,7 +136,7 @@ public class BookingPanel extends JPanel {
             seatButton.setFont(new Font("Arial", Font.BOLD, 12));
 
             // Thêm vào ButtonGroup
-            // seatGroup.add(seatButton); // <-- ĐÃ XÓA
+
 
             // Lưu vào Map để tham chiếu
             seatButtonMap.put(seatButton, ss.getShowtimeSeatId());

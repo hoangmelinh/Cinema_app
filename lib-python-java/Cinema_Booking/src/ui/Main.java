@@ -7,15 +7,6 @@ import java.awt.*;
 import repository.*;
 import service.*;
 
-// Import TẤT CẢ các file UI
-import ui.SignInPanel;
-import ui.SignUpPanel;
-import ui.MainMenuPanel;
-import ui.SearchPanel;
-import ui.BookingPanel; // SỬA: Thêm import
-import ui.PaymentPanel;
-import ui.HistoryPanel;
-
 public class Main extends JFrame {
 
     // --- 1. Các thành phần điều hướng (CardLayout) ---
@@ -72,7 +63,7 @@ public class Main extends JFrame {
         mainPanel.add(paymentPanel, "payment");
         mainPanel.add(historyPanel, "history");
 
-        // Thêm mainPanel (chứa CardLayout) vào JFrame
+
         this.add(mainPanel);
 
         // --- Thiết lập cửa sổ ---

@@ -10,7 +10,7 @@ import java.util.List;
 public class UserRepository {
 
     public void insert(User user) {
-        // SỬA: Cập nhật các cột
+
         String sql = "INSERT INTO users (full_name, email, phone, password) VALUES (?, ?, ?, ?)";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -23,7 +23,7 @@ public class UserRepository {
 
             try (ResultSet rs = stmt.getGeneratedKeys()) {
                 if (rs.next()) {
-                    user.setUserId(rs.getInt(1)); // SỬA: getInt
+                    user.setUserId(rs.getInt(1));
                 }
             }
         } catch (Exception e) {
@@ -34,14 +34,14 @@ public class UserRepository {
 
 
     public User findByEmail(String email) {
-        String sql = "SELECT * FROM users WHERE email=?"; // SỬA: Cột email
+        String sql = "SELECT * FROM users WHERE email=?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, email);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return new User(
-                        rs.getInt("user_id"), // SỬA: getInt
+                        rs.getInt("user_id"),
                         rs.getString("full_name"),
                         rs.getString("email"),
                         rs.getString("phone"),
@@ -54,9 +54,7 @@ public class UserRepository {
         return null;
     }
 
-    /**
-     * Tìm user bằng ID
-     */
+
     public User findById(int userId) { // SỬA: int
         String sql = "SELECT * FROM users WHERE user_id=?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -80,9 +78,7 @@ public class UserRepository {
         return null;
     }
 
-    /**
-     * Lấy tất cả user
-     */
+
     public List<User> findAll() {
         List<User> list = new ArrayList<>();
         String sql = "SELECT * FROM users";
@@ -104,11 +100,9 @@ public class UserRepository {
         return list;
     }
 
-    /**
-     * Cập nhật user (dựa trên email)
-     */
+
     public void update(User user) {
-        // SỬA: Cập nhật các cột
+
         String sql = "UPDATE users SET full_name=?, phone=?, password=? WHERE email=?";
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -124,9 +118,7 @@ public class UserRepository {
         }
     }
 
-    /**
-     * Xóa user (dựa trên email)
-     */
+
     public void deleteByEmail(String email) {
         String sql = "DELETE FROM users WHERE email=?"; // SỬA: Dùng email
         try (Connection conn = DatabaseConnection.getConnection();

@@ -2,7 +2,7 @@ package service;
 
 import model.User;
 import repository.UserRepository;
-import org.mindrot.jbcrypt.BCrypt; // <-- Cần import
+import org.mindrot.jbcrypt.BCrypt;
 import java.util.List;
 
 public class UserService {
@@ -22,12 +22,12 @@ public class UserService {
             throw new IllegalArgumentException("Password cannot be empty");
         }
 
-        // Sửa: Kiểm tra trùng lặp bằng email
+
         if (userRepository.findByEmail(user.getEmail()) != null) {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        // Mã hóa mật khẩu trước khi lưu
+
         String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
         user.setPassword(hashedPassword);
 
@@ -37,7 +37,7 @@ public class UserService {
 
 
     public User login(String email, String password) {
-        // Sửa: Tìm người dùng bằng email
+
         User user = userRepository.findByEmail(email);
 
 

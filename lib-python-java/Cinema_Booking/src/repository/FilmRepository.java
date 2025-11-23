@@ -50,15 +50,10 @@ public class FilmRepository {
     public List<Film> searchByTitle(String keyword) {
         List<Film> results = new ArrayList<>();
 
-        // SQL dùng LOWER() để không phân biệt hoa/thường
-        // Dùng LIKE và %?% để tìm "có chứa"
         String sql = "SELECT * FROM film WHERE LOWER(title) LIKE LOWER(?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            // Gán giá trị cho dấu ?
-            // "%" + keyword + "%" nghĩa là tìm bất cứ đâu
             stmt.setString(1, "%" + keyword + "%");
 
             try (ResultSet rs = stmt.executeQuery()) {
@@ -76,7 +71,7 @@ public class FilmRepository {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            // Ném lỗi hoặc xử lý
+
         }
         return results;
     }
@@ -84,8 +79,6 @@ public class FilmRepository {
     public List<Film> findFilmsByCinemaId(int cinemaId) {
         List<Film> results = new ArrayList<>();
 
-        // SQL: Chọn film (không trùng) TỪ film
-        // JOIN với showtime (nơi film_id và cinema_id khớp)
         String sql = "SELECT DISTINCT f.* FROM film f " +
                 "JOIN showtime s ON f.film_id = s.film_id " +
                 "WHERE s.cinema_id = ?";
@@ -97,12 +90,10 @@ public class FilmRepository {
 
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    // Tạo đối tượng Film từ dữ liệu DB
                     Film film = new Film();
                     film.setFilmId(rs.getInt("film_id"));
                     film.setTitle(rs.getString("title"));
                     film.setGenre(rs.getString("genre"));
-                    // (Set các trường khác nếu có)
 
                     results.add(film);
                 }

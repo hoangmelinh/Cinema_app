@@ -4,7 +4,7 @@ import model.Film;
 import javax.swing.*;
 import java.awt.*;
 
-// Kế thừa JPanel và implements ListCellRenderer
+
 public class FilmRender extends JPanel implements ListCellRenderer<Film> {
 
     // Các thành phần trong template
@@ -35,7 +35,7 @@ public class FilmRender extends JPanel implements ListCellRenderer<Film> {
 
         // Gán dữ liệu vào template
         titleLabel.setText(film.getTitle());
-        genreLabel.setText(film.getGenre()); // (Giả sử bạn có hàm getGenre())
+        genreLabel.setText(film.getGenre());
 
         // Xử lý màu sắc khi chọn
         if (isSelected) {
@@ -48,6 +48,6 @@ public class FilmRender extends JPanel implements ListCellRenderer<Film> {
             genreLabel.setForeground(Color.DARK_GRAY);
         }
 
-        return this; // Trả về template
+        return this;
     }
 }

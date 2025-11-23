@@ -20,7 +20,6 @@ public class ShowtimeRepository {
         this.cinemaRepository = new CinemaRepository();
     }
 
-    // ================= INSERT =================
     public void insert(Showtime showtime) {
 
         String sql = "INSERT INTO showtime (film_id, cinema_id, date, price) VALUES (?, ?, ?, ?)";
@@ -39,7 +38,6 @@ public class ShowtimeRepository {
         }
     }
 
-    // ================= FIND BY ID =================
     public Showtime findById(int showtimeId) {
         String sql = "SELECT * FROM showtime WHERE showtime_id=?";
 
@@ -73,7 +71,6 @@ public class ShowtimeRepository {
         return null;
     }
 
-    // ================= FIND ALL =================
     public List<Showtime> findAll() {
         List<Showtime> list = new ArrayList<>();
         String sql = "SELECT * FROM showtime";
@@ -106,7 +103,6 @@ public class ShowtimeRepository {
         return list;
     }
 
-    // ================= UPDATE =================
     public void update(Showtime showtime) {
         String sql = "UPDATE showtime SET film_id=?, cinema_id=?, date=?, price=? WHERE showtime_id=?";
 
@@ -126,7 +122,6 @@ public class ShowtimeRepository {
         }
     }
 
-    // ================= DELETE =================
     public void delete(int showtimeId) {
         String sql = "DELETE FROM showtime WHERE showtime_id=?";
 
@@ -141,7 +136,7 @@ public class ShowtimeRepository {
         }
     }
 
-    // ================= FIND BY FILM ID =================
+
     public List<Showtime> findByFilmId(int filmId) {
         List<Showtime> list = new ArrayList<>();
         String sql = "SELECT * FROM showtime WHERE film_id=?";
@@ -174,7 +169,6 @@ public class ShowtimeRepository {
         return list;
     }
 
-    // ================= FIND BY CINEMA + FILM =================
     public List<Showtime> findByCinemaIdAndFilmId(int cinemaId, int filmId) {
         List<Showtime> list = new ArrayList<>();
         String sql = "SELECT * FROM showtime WHERE cinema_id=? AND film_id=?";
@@ -206,7 +200,6 @@ public class ShowtimeRepository {
         return list;
     }
 
-    // ================= FIND ALL FILMS OF CINEMA =================
     public List<Film> findFilmByCinemaId(int cinemaId) {
 
         Set<Integer> set = new HashSet<>();

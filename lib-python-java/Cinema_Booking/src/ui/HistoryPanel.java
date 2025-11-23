@@ -89,7 +89,7 @@ public class HistoryPanel extends JPanel {
                 tableModel.addRow(new Object[]{ticketId, filmName, date, seat, status});
 
             } catch (Exception e) {
-                // (Xử lý nếu 1 vé bị hỏng dữ liệu)
+
                 tableModel.addRow(new Object[]{ticket.getTicketId(), "Lỗi dữ liệu", "N/A", "N/A", "Lỗi"});
                 e.printStackTrace();
             }

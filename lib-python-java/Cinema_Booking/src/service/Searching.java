@@ -1,7 +1,7 @@
 package service;
 
 import model.Film;
-import model.Showtime; // <-- SỬA: Thêm import cho Showtime
+import model.Showtime;
 import model.Cinema;
 import repository.*;
 
@@ -16,7 +16,7 @@ public class Searching {
     private final FilmRepository filmRepo;
     private final CinemaRepository cinemaRepo;
 
-    // Constructor (Giữ nguyên)
+
     public Searching(TicketRepository ticketRepo, SeatRepository seatRepo,
                      ShowtimeRepository showtimeRepo, UserRepository userRepo,
                      FilmRepository filmRepo, CinemaRepository cinemaRepo) {
@@ -35,7 +35,6 @@ public class Searching {
 
 
     public List<Film> getAllFilms() {
-        // Hàm này yêu cầu bạn phải có hàm 'findAll()' trong FilmRepository
         return filmRepo.findAll();
     }
 
@@ -51,7 +50,7 @@ public class Searching {
         return cinemaRepo.findAll();
     }
 
-    // HÀM 2 (MỚI): Lấy phim đang chiếu tại 1 rạp
+
     public List<Film> getFilmsByCinemaId(int cinemaId) {
 
         return filmRepo.findFilmsByCinemaId(cinemaId);

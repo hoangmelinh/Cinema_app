@@ -35,13 +35,13 @@ public class SeatRepository {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, seatId); // Sửa: Dùng setInt
+            stmt.setInt(1, seatId);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 return new Seat(
-                        rs.getInt("seat_id"),    // Sửa: Dùng getInt
-                        rs.getString("seat_row"), // Sửa: Dùng getString
+                        rs.getInt("seat_id"),
+                        rs.getString("seat_row"),
                         rs.getString("label"),
                         rs.getInt("number")
                 );
@@ -52,7 +52,6 @@ public class SeatRepository {
         return null;
     }
 
-    // Lấy TẤT CẢ ghế vật lý
     public List<Seat> findAll() {
         List<Seat> list = new ArrayList<>();
         String sql = "SELECT * FROM seat";
